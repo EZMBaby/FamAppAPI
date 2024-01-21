@@ -1,0 +1,35 @@
+﻿using FamAppAPI.Data;
+using FamAppAPI.Interfaces;
+using FamAppAPI.Models;
+
+public class UserRepository : IUserRepository
+{
+    private readonly DataContext dataContext;
+
+    public UserRepository(DataContext context)
+    {
+        dataContext = context;
+    }
+
+    // Alle Benutzer abrufen
+    public ICollection<User> GetUsers() => dataContext.Users.OrderBy(u => u.id).ToList();
+
+    // Einen Benutzer anhand der ID abrufen
+    public User GetUserById(int id) => dataContext.Users.SingleOrDefault(u => u.id == id);
+
+    // Einen Benutzer anhand der E-Mail-Adresse abrufen
+    public User GetUserByMail(string email) => dataContext.Users.SingleOrDefault(u => u.email == email);
+
+    // Überprüfen, ob ein Benutzer anhand der ID existiert
+    public bool UserExistsById(int id) => dataContext.Users.Any(u => u.id == id);
+
+    // Überprüfen, ob ein Benutzer anhand der E-Mail-Adresse existiert
+    public bool UserExistsByMail(string email) => dataContext.Users.Any(u => u.email == email);
+
+    // Die Anzahl der Gruppen eines Benutzers abrufen
+    public int GetUserGroupCount(int userId)
+    {
+        var groupCount = dataContext.UsersInGroups.Where(ug => ug.UserId == userId);
+        return groupCount.Any() ? groupCount.Count() : 0;
+    }
+}
