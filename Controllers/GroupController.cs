@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using FamAppAPI.Dto;
 using FamAppAPI.Interfaces;
-using Microsoft.AspNetCore.Components;
+using FamAppAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
-using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
 
 namespace FamAppAPI.Controllers
 {
@@ -13,6 +12,8 @@ namespace FamAppAPI.Controllers
     [ApiController]
     public class GroupController : Controller
     {
+        #region Initialisierung
+
         private readonly IGroupsRepository _groupRepository;
         private readonly IMapper _mapper;
 
@@ -23,29 +24,107 @@ namespace FamAppAPI.Controllers
             _mapper = mapper;
         }
 
+        #endregion
+
+        #region GET-Methoden
+
         // Alle Gruppen abrufen
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Group>))]
         public IActionResult GetGroups()
-        {
-            // Mappen der Gruppen aus dem Repository zu DTOs mithilfe von AutoMapper
-            var groups = _mapper.Map<List<GroupsDto>>(_groupRepository.GetGroups());
-            return !ModelState.IsValid ? BadRequest(ModelState) : Ok(groups);
-        }
+            => !ModelState.IsValid 
+            ? BadRequest(ModelState) 
+            : Ok(_mapper.Map<List<GroupsDto>>(_groupRepository.GetGroups()));
 
         // Eine Gruppe anhand der ID abrufen
         [HttpGet("id/{groupId}")]
         [ProducesResponseType(200, Type = typeof(Group))]
         [ProducesResponseType(400)]
         public IActionResult GetGroupById(int groupId)
+            => !_groupRepository.GroupExistsById(groupId)
+            ? NotFound()
+            : Ok(_mapper.Map<GroupsDto>(_groupRepository.GetGroupById(groupId)));
+
+        #endregion
+
+        #region POST-Methoden
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateGroup([FromBody] GroupsDto groupCreation)
         {
-            // Überprüfen, ob die Gruppe anhand der angegebenen ID existiert
+            // Check ob groupCreation leer ist -> BadRequest
+            if (groupCreation == null)
+                return BadRequest(ModelState);
+
+            // Sucht ob eine Gruppe mit dieser ID existiert
+            var group = _groupRepository.GetGroups()
+                .Where(g => g.id == groupCreation.id)
+                .FirstOrDefault();
+
+            // Wenn eine Gruppe mit dieser ID existiert -> BadRequest
+            if (group != null)
+            {
+                ModelState.AddModelError("", "Group with this ID already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            // Check ob groupCreation valide ist -> BadRequest
+            var groupMap = _mapper.Map<Groups>(groupCreation);
+
+            if (!_groupRepository.CreateGroup(groupMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created group");
+        }
+
+        #endregion
+
+        #region PUT-Methoden
+
+        [HttpPut("update/{groupId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateUser(int groupId, [FromBody] GroupsDto groupUpdate)
+        {
+            // Check ob groupUpdate leer ist
+            // Wenn ja -> BadRequest
+            if (groupUpdate == null)
+                return BadRequest(ModelState);
+
+            // Check ob die gegebene ID mit der ID von groupUpdate übereinstimmt
+            // Wenn nicht -> BadRequest
+            if (groupId != groupUpdate.id)
+                return BadRequest(ModelState);
+
+            // Check ob die Gruppe existiert
+            // Wenn nicht -> NotFound
             if (!_groupRepository.GroupExistsById(groupId))
                 return NotFound();
 
-            // Mappen der Gruppe aus dem Repository zu DTOs mithilfe von AutoMapper
-            var group = _mapper.Map<GroupsDto>(_groupRepository.GetGroupById(groupId));
-            return !ModelState.IsValid ? BadRequest(ModelState) : Ok(group);
+            // Check ob groupUpdate valide ist
+            // Wenn nicht -> BadRequest
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            // Update
+            var groupMap = _mapper.Map<Groups>(groupUpdate);
+
+            if (!_groupRepository.UpdateGroup(groupMap))
+            {
+                // Fehlermeldung ausgeben, falls das Update fehlschlägt
+                ModelState.AddModelError("", "Something went wrong while updating");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
+
+        #endregion
     }
 }

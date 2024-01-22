@@ -32,4 +32,22 @@ public class UserRepository : IUserRepository
         var groupCount = dataContext.UsersInGroups.Where(ug => ug.UserId == userId);
         return groupCount.Any() ? groupCount.Count() : 0;
     }
+    // Erstelle einen neuen Benutzer
+    public bool CreateUser(User user)
+    {
+        dataContext.Add(user);
+        return Save();
+    }
+
+    // Daten des Benutzers aktualisieren
+    public bool UpdateUser(User user)
+    {
+        dataContext.Update(user);
+        return Save();
+    }
+
+    public bool Save() 
+        => dataContext.SaveChanges() > 0
+        ? true
+        : false;
 }

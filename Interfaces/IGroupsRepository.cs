@@ -17,5 +17,13 @@ namespace FamAppAPI.Interfaces
 
         // Überprüfen, ob eine Gruppe anhand der ID existiert
         bool GroupExistsById(int groupId);
+
+        // Gruppe erstellen
+        bool CreateGroup(Groups group);
+
+        // Gruppe bearbeiten
+        bool UpdateGroup(Groups group);
+
+        bool Save();
     }
 }

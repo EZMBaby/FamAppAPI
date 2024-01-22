@@ -22,5 +22,12 @@ namespace FamAppAPI.Interfaces
 
         // Überprüfen, ob ein Benutzer anhand der E-Mail-Adresse existiert
         bool UserExistsByMail(string email);
+
+        // Ein neuer Benutzer erstellen
+        bool CreateUser(User user);
+
+        bool UpdateUser(User user);
+
+        bool Save();
     }
 }
