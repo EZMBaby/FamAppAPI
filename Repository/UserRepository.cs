@@ -46,6 +46,13 @@ public class UserRepository : IUserRepository
         return Save();
     }
 
+    // Benutzer löschen
+    public bool DeleteUser(User user)
+    {
+        dataContext.Remove(user);
+        return Save();
+    }
+
     public bool Save() 
         => dataContext.SaveChanges() > 0
         ? true

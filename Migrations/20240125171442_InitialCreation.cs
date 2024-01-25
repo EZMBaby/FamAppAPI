@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace FamAppAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -79,7 +79,7 @@ namespace FamAppAPI.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created group");
+            return Ok(groupMap);
         }
 
         #endregion
@@ -122,6 +122,35 @@ namespace FamAppAPI.Controllers
                 return StatusCode(500, ModelState);
             }
 
+            return NoContent();
+        }
+
+        #endregion
+
+        #region DELETE-Methoden
+
+        [HttpDelete("{groupId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteUser(int groupId)
+        {
+            // Check ob der Benutzer existiert
+            // Wenn nicht -> NotFound
+            if (!_groupRepository.GroupExistsById(groupId))
+                return NotFound();
+
+            // Sucht den Benutzer in der Datenbank
+            var groupToDelete = _groupRepository.GetGroupById(groupId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_groupRepository.DeleteGroup(groupToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong while deleting");
+                return StatusCode(500, ModelState);
+            }
             return NoContent();
         }
 

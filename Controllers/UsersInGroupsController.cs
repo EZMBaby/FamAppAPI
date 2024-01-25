@@ -84,5 +84,35 @@ namespace FamAppAPI.Controllers
         }
 
         #endregion
+
+        #region DELETE-Methoden
+
+        [HttpDelete("{userId}/{groupId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteUserFromGroup(int userId, int groupId)
+        {
+            // Check ob der Benutzer in der Gruppe existiert
+            // Wenn nicht -> NotFound
+            if (!_userInGroupRepository.CheckIfUserIsInGroup(userId, groupId))
+                return NotFound();
+
+            // Sucht die Benutzer-Gruppen Relation in der Datenbank
+            var userToDeleteFromGroup = _userInGroupRepository
+                .GetUserInGroup(userId, groupId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_userInGroupRepository.DeleteUserInGroup(userToDeleteFromGroup))
+            {
+                ModelState.AddModelError("", "Something went wrong while deleting");
+                return StatusCode(500, ModelState);
+            }
+            return NoContent();
+        }
+
+        #endregion
     }
 }

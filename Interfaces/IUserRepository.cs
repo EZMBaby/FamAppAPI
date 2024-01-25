@@ -26,7 +26,11 @@ namespace FamAppAPI.Interfaces
         // Ein neuer Benutzer erstellen
         bool CreateUser(User user);
 
+        // Ein Benutzer updaten
         bool UpdateUser(User user);
+
+        // Ein Benutzer löschen
+        bool DeleteUser(User user);
 
         bool Save();
     }

@@ -45,6 +45,13 @@ namespace FamAppAPI.Repository
             return Save();
         }
 
+        // Eine Gruppe löschen
+        public bool DeleteGroup(Groups groupId)
+        {
+            dataContext.Remove(groupId);
+            return Save();
+        }
+
         public bool Save()
             => dataContext.SaveChanges() > 0
             ? true

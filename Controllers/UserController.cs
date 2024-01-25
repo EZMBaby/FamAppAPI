@@ -29,7 +29,7 @@ namespace FamAppAPI.Controllers
         // Alle Benutzer abrufen
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
-        public IActionResult GetUsers() 
+        public IActionResult GetUsers()
             => !ModelState.IsValid
             ? BadRequest(ModelState)
             : Ok(_mapper.Map<List<UserDto>>(_userRepository.GetUsers()));
@@ -38,9 +38,9 @@ namespace FamAppAPI.Controllers
         [HttpGet("id/{userId}")]
         [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(404)]
-        public IActionResult GetUserById(int userId) 
-            => (!_userRepository.UserExistsById(userId)) 
-            ? NotFound() 
+        public IActionResult GetUserById(int userId)
+            => (!_userRepository.UserExistsById(userId))
+            ? NotFound()
             : Ok(_mapper.Map<UserDto>(_userRepository.GetUserById(userId)));
 
         // Benutzer anhand der E-Mail-Adresse abrufen
@@ -135,6 +135,35 @@ namespace FamAppAPI.Controllers
                 return StatusCode(500, ModelState);
             }
 
+            return NoContent();
+        }
+
+        #endregion
+
+        #region DELETE-Methoden
+
+        [HttpDelete("{userId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteUser(int userId)
+        {
+            // Check ob der Benutzer existiert
+            // Wenn nicht -> NotFound
+            if (!_userRepository.UserExistsById(userId))
+                return NotFound();
+
+            // Sucht den Benutzer in der Datenbank
+            var userToDelete = _userRepository.GetUserById(userId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_userRepository.DeleteUser(userToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong while deleting");
+                return StatusCode(500, ModelState);
+            }
             return NoContent();
         }
 

@@ -24,6 +24,9 @@ namespace FamAppAPI.Interfaces
         // Gruppe bearbeiten
         bool UpdateGroup(Groups group);
 
+        // Gruppe löschen
+        bool DeleteGroup(Groups groupId);
+
         bool Save();
     }
 }

@@ -13,44 +13,44 @@ namespace FamAppAPI.Repository
             dataContext = context;
         }
 
+        // Gesammte Tabelle abrufen
         public ICollection<UserInGroup> GetAllUsersInGroups() 
-        {
-            return dataContext
-                .UsersInGroups
-                .OrderBy(ug => ug.UserId)
-                .ToList();
-        }
+            => dataContext.UsersInGroups.OrderBy(ug => ug.UserId).ToList();
+
+        // Alle Gruppen eines Users abrufen
         public ICollection<Groups> GetGroupsOfUser(int userId)
-        {
-            var groupIds = dataContext
-                .UsersInGroups
-                .Where(ug => ug.UserId == userId)
-                .Select(ug => ug.GroupId)
-                .ToList();
-            
-            return dataContext
-                .Groups
-                .Where(g => groupIds.Contains(g.id))
-                .ToList();
-        }
+            => dataContext.Groups.Where(g
+                => (dataContext.UsersInGroups.Where(ug => ug.UserId == userId).Select(ug => ug.GroupId).ToList())
+            .Contains(g.id)).ToList();
 
+        // Alle Users einer Gruppe abrufen
         public ICollection<User> GetUsersInGroup(int groupId)
-        {
-            var userIds = dataContext
-                .UsersInGroups
-                .Where(ug => ug.GroupId == groupId)
-                .Select(ug => ug.UserId)
-                .ToList();
+            => dataContext.Users.Where(u
+                => (dataContext.UsersInGroups.Where(ug => ug.GroupId == groupId).Select(ug => ug.UserId).ToList())
+                .Contains(u.id)).ToList();
 
-            return dataContext
-                .Users
-                .Where(u => userIds.Contains(u.id))
-                .ToList();
+        public UserInGroup GetUserInGroup(int userId, int groupId)
+        {
+            var userInGroup = dataContext.UsersInGroups.SingleOrDefault(ug => ug.UserId == userId && ug.GroupId == groupId);
+            return userInGroup != null ? userInGroup : new UserInGroup();
         }
 
+        // Prüfen, ob der User in der Gruppe ist
+        public bool CheckIfUserIsInGroup(int userId, int groupId)
+            => dataContext.UsersInGroups.Any( ug => ug.UserId == userId && ug.GroupId == groupId);
+
+
+        // Einen Benutzer in eine Gruppe eintragen
         public bool CreateUserInGroup(UserInGroup userInGroup)
         {
             dataContext.Add(userInGroup);
+            return Save();
+        }
+
+        // Einen Benutzer aus einer Gruppe löschen
+        public bool DeleteUserInGroup(UserInGroup userInGroup)
+        {
+            dataContext.Remove(userInGroup);
             return Save();
         }
 

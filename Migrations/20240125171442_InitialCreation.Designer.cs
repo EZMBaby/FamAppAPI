@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamAppAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240122134915_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240125171442_InitialCreation")]
+    partial class InitialCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
