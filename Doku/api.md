@@ -10,6 +10,9 @@ Die FamApp-API (im Folgenden *API*) sowie die folgende Dokumentation wurde von m
 - [Grundlegendes](#grundlegendes) 
 - [Definition: API](#definition)
 - [Definition: REST](#rest)
+- [Codische Funktionsweise einer API](#apiCode)
+- [Funktionen der API](#apiFunc)
+- [Datenbank](#database)
 
 
 ## <a name="grundlegenes" style="color:orange">Grundlegendes</a>
@@ -76,7 +79,7 @@ In Bezug auf RESTful APIs steht REST für die Grundsätze, die bei der Gestaltun
 
 Die Verwendung von REST-Prinzipien erleichtert die Entwicklung von skalierbaren und leicht verständlichen APIs. RESTful APIs sind weit verbreitet und bilden die Grundlage vieler moderner Web-Services.
 
-## <span name="apiCode" style="color:orange">Codische funktionsweise einer API</span>
+## <a name="apiCode" style="color:orange">Codische Funktionsweise einer API</a>
 
 Der codische Aufbau einer API besteht in der Regel aus 3 Teilen:
 
@@ -164,6 +167,8 @@ Falls diese Gruppe nicht existiert, wird der Statuscode 404 (nicht gefunden) zur
 
 
 ## <a name="apiFunc" style="color:orange">Funktionen der API</a>
+
+## <a name="database" style="color:orange">Datenbank</a>
 
 Derzeitig besteht die *API* aus 3 Datenbanktabellen: [^1]
 
