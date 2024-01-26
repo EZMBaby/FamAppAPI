@@ -24,6 +24,9 @@ namespace FamAppAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -32,6 +35,8 @@ namespace FamAppAPI.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.HasKey("id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Groups");
                 });
@@ -78,6 +83,17 @@ namespace FamAppAPI.Migrations
                     b.ToTable("UsersInGroups");
                 });
 
+            modelBuilder.Entity("FamAppAPI.Models.Groups", b =>
+                {
+                    b.HasOne("FamAppAPI.Models.User", "User")
+                        .WithMany("Groups")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FamAppAPI.Models.UserInGroup", b =>
                 {
                     b.HasOne("FamAppAPI.Models.Groups", "Groups")
@@ -104,6 +120,8 @@ namespace FamAppAPI.Migrations
 
             modelBuilder.Entity("FamAppAPI.Models.User", b =>
                 {
+                    b.Navigation("Groups");
+
                     b.Navigation("UsersInGroups");
                 });
 #pragma warning restore 612, 618

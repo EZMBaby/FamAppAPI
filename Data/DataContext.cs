@@ -16,27 +16,21 @@ namespace FamAppAPI.Data
         {
         }
 
-        /// <summary>
         /// Ruft die Gruppen in der API ab oder legt sie fest.
-        /// </summary>
         public DbSet<Groups> Groups { get; set; }
 
-        /// <summary>
         /// Ruft die Benutzer in der API ab oder legt sie fest.
-        /// </summary>
         public DbSet<User> Users { get; set; }
 
-        /// <summary>
         /// Ruft die Benutzer-in-Gruppen-Beziehungen in der API ab oder legt sie fest.
-        /// </summary>
         public DbSet<UserInGroup> UsersInGroups { get; set; }
 
-        /// <summary>
         /// Konfiguriert das Modell für den Datenkontext.
-        /// </summary>
         /// <param name="modelBuilder">Der Modell-Builder.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            #region UserInGroup
+
             // Konfiguriert den Primärschlüssel für die UserInGroup-Entität
             modelBuilder.Entity<UserInGroup>()
                 .HasKey(userInGroup => new { userInGroup.UserId, userInGroup.GroupId });
@@ -52,6 +46,18 @@ namespace FamAppAPI.Data
                 .HasOne(userInGroup => userInGroup.Groups)
                 .WithMany(group => group.UsersInGroups)
                 .HasForeignKey(userInGroup => userInGroup.GroupId);
+
+            #endregion
+
+            #region Groups
+
+            modelBuilder.Entity<User>()
+                .HasMany(user => user.Groups) // Konfiguriert die Beziehung zwischen Groups und Users-Entitäten, um eine Gruppe zu erstellen, die nur einem User zugewiesen werden kann
+                .WithOne(group => group.User)
+                .HasForeignKey(group => group.UserId)
+                .IsRequired();
+
+            #endregion
         }
     }
 }
