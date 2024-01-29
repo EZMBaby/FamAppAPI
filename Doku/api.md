@@ -7,12 +7,16 @@ Die FamApp-API (im Folgenden *API*) sowie die folgende Dokumentation wurde von m
 
 ## <span style="color:orange">Inhaltsverzeichnis</span> 
 
-- [Grundlegendes](#grundlegendes) 
-- [Definition: API](#definition)
-- [Definition: REST](#rest)
-- [Codische Funktionsweise einer API](#apiCode)
-- [Funktionen der API](#apiFunc)
-- [Datenbank](#database)
+
+ - [Grundlegendes](#grundlegendes)
+ - [Definition: API](#definition)
+    - ["Application"](#application)
+    - ["Programming"](#programming)
+    - ["Interface"](#interface)
+ - [Definition: REST](#rest)
+ - [Codische Funktionsweise einer API](#apiCode)
+ - [Funktionen der API](#apiFunc)
+ - [Datenbank](#database)
 
 
 ## <a name="grundlegenes" style="color:orange">Grundlegendes</a>
@@ -29,7 +33,7 @@ Um dies zu ermöglichen, wird eine *REST*-Schnittstelle verwendet.
 Zunächst ein kleiner Exkurs zum allgemeinen Thema *REST-API*:
 **API** ist eine Abkürzung für **Application Programming Interface**.
 
-- <span style="color: lightblue">**Application**:</span>
+- ### <a name="application" style="color: lightblue">**Application**:</a>
 >*"Application"* steht für "Anwendung" oder "Applikation". In diesem Kontext bezieht sich "Application" auf die Softwareanwendung oder das Computerprogramm, das die API nutzt oder darauf zugreift.				
 >
 >Eine API ist eine Schnittstelle, die es Anwendungen ermöglicht, miteinander zu kommunizieren oder auf bestimmte Funktionen und Dienste zuzugreifen. Wenn wir also von "Application" in Bezug auf eine API sprechen, meinen wir die Software oder Anwendung, die die API verwendet, um Daten auszutauschen, Funktionen aufzurufen oder andere Aufgaben zu erledigen.
@@ -37,14 +41,14 @@ Zunächst ein kleiner Exkurs zum allgemeinen Thema *REST-API*:
 >Beispiel: Wenn Sie eine Anwendung entwickeln, die auf Wetterdaten zugreifen möchte, könnten Sie eine Wetter-API verwenden. In diesem Fall wäre Ihre Anwendung die "Application", die die Wetter-API nutzt, um aktuelle Wetterinformationen abzurufen und in Ihrer Anwendung anzuzeigen.
 
 
-- <span style="color: lightblue">**Programming**:</span>
+- ### <a name="programming" style="color: lightblue">**Programming**:</a>
 >*"Programming"* steht für das Entwickeln von Software oder das Schreiben von Code, insbesondere für die Interaktion mit der API. Das Wort "Programming" bezieht sich hier auf die Aktivität des Programmierens oder Codierens, um eine Anwendung zu erstellen oder zu modifizieren, die auf die Funktionen und Dienste einer API zugreift.
 >
 >APIs bieten eine Schnittstelle, über die Softwareanwendungen miteinander kommunizieren können. Die Entwickler programmieren (schreiben Code für) ihre Anwendungen so, dass sie die API verwenden, um Daten auszutauschen, Funktionen aufzurufen oder andere Aktionen durchzuführen. Dieser Prozess des Programmierens beinhaltet die Integration und Nutzung der Schnittstelle, die die API bereitstellt.
 >
 >Beispiel: Wenn eine Anwendung auf die Twitter-API zugreifen möchte, programmieren die Entwickler den Code der Anwendung so, dass er die Twitter-API nutzt, um Tweets abzurufen, zu posten oder andere Twitter-Funktionen zu verwenden. Daher bezieht sich "Programming" im Zusammenhang mit APIs auf die Entwicklung von Software, um die Funktionen der API in der Anwendung zu nutzen.
 
-- <span style="color: lightblue">**Interface**:</span>
+- ### <a name="interface" style="color: lightblue">**Interface**:</a>
 >*"Interface"* bezeichnet die Schnittstelle, die eine Softwareanwendung bereitstellt, um mit anderen Anwendungen oder Komponenten zu interagieren. Es handelt sich um die definierten Methoden, Funktionen und Parameter, die von der API unterstützt werden und es anderen Programmen ermöglichen, auf diese zuzugreifen.
 >
 >Eine API-Schnittstelle legt fest, wie verschiedene Softwarekomponenten miteinander kommunizieren können. Es dient als Vertrag oder Vereinbarung zwischen den verschiedenen Teilen der Software. Entwickler, die eine API verwenden möchten, müssen sich an die Spezifikationen dieser Schnittstelle halten, um sicherzustellen, dass ihre Anwendungen ordnungsgemäß mit der API kommunizieren können.
@@ -65,13 +69,13 @@ Es ist ein Architekturstil, der von *Roy Fielding* in seiner Dissertation von 20
 
 In Bezug auf RESTful APIs steht REST für die Grundsätze, die bei der Gestaltung dieser APIs beachtet werden sollen. Einige der Kernprinzipien von REST sind:
 
-- <span style="color: lightblue">**Zustandslose Kommunikation:** </span>
+- ### <span style="color: lightblue">**Zustandslose Kommunikation:** </span>
 >Jede Anfrage vom Client an den Server enthält alle Informationen, die für den Server erforderlich sind, um die Anfrage zu verstehen und zu verarbeiten. Der Server speichert keine Informationen über den Zustand des Clients zwischen den Anfragen.
 
-- <span style="color: lightblue">**Ressourcen:** </span>
+- ### <span style="color: lightblue">**Ressourcen:** </span>
 >REST behandelt Daten und Dienste als Ressourcen, die durch URIs (Uniform Resource Identifiers) identifiziert werden. Diese Ressourcen können in verschiedenen Formaten repräsentiert werden, wie z.B. JSON oder XML.
 
-- <span style="color: lightblue">**Standardmethoden:**</span>
+- ### <span style="color: lightblue">**Standardmethoden:**</span>
 >RESTful APIs verwenden standardisierte HTTP-Methoden wie GET, POST, PUT und DELETE, um CRUD-Operationen (Create, Read, Update, Delete) auf Ressourcen durchzuführen.
 
 - <span style="color: lightblue">**Repräsentation:**</span>
@@ -83,11 +87,12 @@ Die Verwendung von REST-Prinzipien erleichtert die Entwicklung von skalierbaren 
 
 Der codische Aufbau einer API besteht in der Regel aus 3 Teilen:
 
-- <span style="color: lightblue">Controller</span>
+- ### <span style="color: lightblue">Controller</span>
 
 >Der Controller verwaltet einkommende Abfragen[^1] und verarbeitet diese.
 Es wird für jede Tabelle ein eigener Controller erstellt, der die jeweiligen Tabellenabfragen verwaltet.
 Vorab wird im für jeden die Standartroute festgelegt:
+
 ```cs
     namespace FamAppAPI.Controllers
     {
@@ -100,8 +105,10 @@ Vorab wird im für jeden die Standartroute festgelegt:
         ...
     }
 ```
+
 >[controller] stellt hierbei eine Variable für die Tabellennamen dar, welche der Controller selbst verwaltet.
 Daraufhin werden im Construktor des Controllers sowohl das dazugehörige *Repository-Interface* als auch wie in unserem Fall ein *Mapper* festgelegt:
+
 ```cs
     // Konstruktor zur Initialisierung des GroupController
 
@@ -111,7 +118,9 @@ Daraufhin werden im Construktor des Controllers sowohl das dazugehörige *Reposi
         _mapper = mapper;
     }
 ```
+
 > Hiernach folgen die sogenannten *Response-Methods*. Diese definieren, wie die API bzw. dieser Controller mit den gegebenen Routen umgehen muss:
+
 ```cs
     // Eine Gruppe anhand der ID abrufen
 
@@ -125,11 +134,13 @@ Daraufhin werden im Construktor des Controllers sowohl das dazugehörige *Reposi
         ? NotFound()    <-- Statuscode 404 = nicht gefunden
         : Ok(_mapper.Map<GroupsDto>(_groupRepository.GetGroupById(groupId)));   <-- Falls Gruppe existiert, wird die Gruppe in ein DTO umgewandelt und als Statuscode 200 zurückgegeben
 ```
+
 >Das *DTO* (Data Transfer Object), was hier nun aufgetaucht ist, erstellen wir selbst. 
 Dies ist ein Designmuster in der Softwareentwicklung, welches verwendet wird, um Daten zwischen Softwarekomponenten zu übertragen. 
 Das Hauptziel eines DTO ist es, Daten zwischen verschiedenen Teilen eines Systems zu transportieren, ohne dass die darunter liegende Struktur direkt offengelegt wird.
 Dies hilft, die Kopplung zwischen den verschiedenen Komponenten zu reduzieren.
 Hier eine Gegenüberstellung des GroupDto mit der eigentlichen Group-Klasse:
+
 ```cs
     public class GroupsDto
     {
@@ -150,6 +161,7 @@ Hier eine Gegenüberstellung des GroupDto mit der eigentlichen Group-Klasse:
         public ICollection<UserInGroup> UsersInGroups { get; set; } <-- Nicht im GroupDto vorhanden!!
     }
 ```
+
 > Das DTO verhindert hier, dass die 2 Parameter User und UsersInGroups mitgesendet werden. Diese würden `<null>` zurückgeben, da sie lediglich für die Logik der API über die Datenbank existieren. 
 >
 >So weiß nun die API, dass sie bei der Abfrage `https://www.api_test_abfrage.de/api/Group/id/256` die Methode `public IActionResult GetGroupById(int groupId)` ausführen müsste, welche weiter in das Repository leiten würde.
@@ -157,11 +169,11 @@ Hier würden wir ein JSON-Objekt zurückbekommen, welches die Gruppe mit der ID 
 Falls diese Gruppe nicht existiert, wird der Statuscode 404 (nicht gefunden) zurückgegeben.
 
 
-- <span style="color: lightblue"> Repository</span>
+- ### <span style="color: lightblue"> Repository</span>
 
 >Repositories sind die "ausführende Kraft" der API. Der Controller leitet an das jeweilige Repository weiter, welches dann gewisse Funktionen ausführt, um mit der Datenbank bzw. in unserer API mit dem DataContext[^2] zu agieren.
 
-- <span style="color: lightblue">Model</span>
+- ### <span style="color: lightblue">Model</span>
 
 >
 
@@ -172,7 +184,7 @@ Falls diese Gruppe nicht existiert, wird der Statuscode 404 (nicht gefunden) zur
 
 Derzeitig besteht die *API* aus 3 Datenbanktabellen: [^1]
 
-- <span style="color: lightblue">Users</span>
+- ### <span style="color: lightblue">Users</span>
 > Diese Tabelle wird zur Verwaltung von Benutzern verwendet.
 Hier werden die Daten der registrierten Benutzer aufbewahrt, die bspw. zum Anmelden des Benutzers genutzt werden.
 Des Weiteren werden hier auch neue Benutzer angelegt.
@@ -190,7 +202,7 @@ Des Weiteren werden hier auch neue Benutzer angelegt.
 
 ---
 
-- <span style="color: lightblue">Groups</span>
+- ### <span style="color: lightblue">Groups</span>
 > Die Tabelle *Groups* wird zum Verwaltung von Gruppen verwendet.
 Hier werden sämtliche erstellten Gruppen gespeichert. Da beim Registrieren direkt eine eigene Gruppe erstellt wird, wird diese auch direkt hier gespeichert.
 >
@@ -206,7 +218,7 @@ Hier werden sämtliche erstellten Gruppen gespeichert. Da beim Registrieren dire
 
 ---
 
-- <span style="color: lightblue">UsersInGroups</span>
+- ### <span style="color: lightblue">UsersInGroups</span>
 > Die Tabelle <span style="color: lightblue">*UsersInGroups*</span> repräsentiert die ==Beziehung zwischen Benutzer und Gruppen==, also welche Benutzer in welchen Gruppen existieren. 
 Dies erfolgt über eine *Many-To-Many Verbindung*, welche aussagt, dass ==ein Benutzer in mehreren Gruppen== existieren darf und dass ==eine Gruppe mehrere Benutzer== beinhalten darf.
 Der Sinn dieser Tabelle ist es, nachzuverfolgen, welcher Benutzer auf welche Gruppeninhalte Zugriff hat.
